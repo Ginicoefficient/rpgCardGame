@@ -2,10 +2,7 @@
 import { getDiceRollArray, getDicePlaceholderHtml } from "./utils.js";
 
 function Character(data) {
-  Object.assign(this, data);
-
-  //set's the initial dice to empty placeholders
-  this.diceArray = getDicePlaceholderHtml(this.diceCount);
+  Object.assign(this, data); //info from character data is added to character constructor object
 
   this.getCharacterHtml = function () {
     const { elementId, charClass, avatar, health, diceCount, diceArray } = this;
@@ -21,6 +18,9 @@ function Character(data) {
         </div>`;
   };
 
+  //set's the initial dice to empty placeholders
+  this.diceArray = getDicePlaceholderHtml(this.diceCount);
+
   //called when attack happens - updates currentDiceDcore based on diceCount and the random roller function
   //then sets the array depicted into numbers of the current score
   this.getDiceHtml = function (diceCount) {
@@ -30,6 +30,15 @@ function Character(data) {
         return `<div class="dice">${num}</div>`;
       })
       .join("");
+  };
+
+  //accepts parameter that is currentDiceScore
+  //reduces to a single score and subtracts from current health
+  this.takeDamage = function (attackScoreArray) {
+    const totalAttackScore = attackScoreArray.reduce(function (total, current) {
+      return total + current;
+    });
+    this.health -= totalAttackScore;
   };
 }
 
