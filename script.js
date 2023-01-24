@@ -4,7 +4,6 @@ const characterOptions = [
     charClass: "Wizard",
     avatar: "images/wizard.png",
     health: 60,
-    dice: [4, 3, 1],
     diceCount: 3,
   },
   {
@@ -12,7 +11,6 @@ const characterOptions = [
     charClass: "Orc",
     avatar: "images/orc.png",
     health: 10,
-    dice: [2],
     diceCount: 1,
   },
 ];
@@ -22,12 +20,7 @@ function renderCharacter(characterName) {
   const character = characterOptions.find(
     (character) => character.charClass === characterName
   );
-  let diceHtml = [];
-  diceHtml = character.dice
-    .map(function (die) {
-      return `<div class="dice">${die}</div>`;
-    })
-    .join("");
+  let diceHtml = getDiceHtml(character.diceCount);
 
   if (character) {
     innerHtml += `<div id="${character.elementId}">
@@ -46,9 +39,17 @@ renderCharacter("Wizard");
 renderCharacter("Orc");
 
 function getDiceRollArray(diceCount) {
-  randomRoll = [];
-  for (i = 0; i <= diceCount; i++) {
-    randomRoll.push(Math.floor(Math.random() * 6 + 1));
-  }
-  return randomRoll;
+  return new Array(diceCount).fill(0).map(function () {
+    return Math.floor(Math.random() * 6 + 1);
+  });
+}
+
+function getDiceHtml(diceCount) {
+  let diceHtml = ``;
+  diceHtml = getDiceRollArray(diceCount)
+    .map(function (roll) {
+      return `<div class="dice">${roll}</div>`;
+    })
+    .join("");
+  return diceHtml;
 }
