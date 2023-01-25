@@ -9,7 +9,7 @@ const characterOptions = {
   monster: {
     charClass: "Orc",
     avatar: "images/orc.png",
-    health: 10,
+    health: 60,
     diceCount: 1,
     currentDiceScore: [],
   },
