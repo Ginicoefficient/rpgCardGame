@@ -1,16 +1,30 @@
 const characterOptions = {
   hero: {
-    charClass: "Wizard",
+    name: "Wizard",
     avatar: "images/wizard.png",
     health: 60,
     diceCount: 3,
     currentDiceScore: [],
   },
-  monster: {
-    charClass: "Orc",
+  orc: {
+    name: "Orc",
     avatar: "images/orc.png",
-    health: 60,
+    health: 20,
     diceCount: 1,
+    currentDiceScore: [],
+  },
+  demon: {
+    name: "Demon",
+    avatar: "images/demon.png",
+    health: 25,
+    diceCount: 2,
+    currentDiceScore: [],
+  },
+  goblin: {
+    name: "Goblin",
+    avatar: "images/goblin.png",
+    health: 20,
+    diceCount: 3,
     currentDiceScore: [],
   },
 };
