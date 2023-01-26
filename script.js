@@ -1,17 +1,15 @@
-import characterOptions from "./data.js";
+import characterData from "./data.js";
 import Character from "./Character.js";
 
-document.getElementById("attack-button").addEventListener("click", attack);
-
 function attack() {
-  wizard.getDiceHtml;
-  orc.getDiceHtml;
-  orc.takeDamage(wizard.currentDiceScore);
+  wizard.getDiceHtml();
+  orc.getDiceHtml();
   wizard.takeDamage(orc.currentDiceScore);
-  if (wizard.isDead || orc.isDead) {
+  orc.takeDamage(wizard.currentDiceScore);
+  render();
+  if (wizard.dead || orc.dead) {
     endGame();
   }
-  render();
 }
 
 function endGame() {
@@ -23,18 +21,22 @@ function endGame() {
       : "The Orc is Victorious";
 
   const endEmoji = wizard.health > 0 ? "🔮" : "☠️";
-
-  document.body.innerHTML = `<div class="end-game">
-      <h2>Game Over</h2>
-      <h3>${endMessage}</h3>
-      <p class="end-emoji">${endEmoji}</p>
-    </div>`;
+  document.body.innerHTML = `
+        <div class="end-game">
+            <h2>Game Over</h2> 
+            <h3>${endMessage}</h3>
+            <p class="end-emoji">${endEmoji}</p>
+        </div>
+        `;
 }
+
+document.getElementById("attack-button").addEventListener("click", attack);
+
 function render() {
   document.getElementById("hero").innerHTML = wizard.getCharacterHtml();
   document.getElementById("monster").innerHTML = orc.getCharacterHtml();
 }
 
-const wizard = new Character(characterOptions.hero);
-const orc = new Character(characterOptions.monster);
+const wizard = new Character(characterData.hero);
+const orc = new Character(characterData.monster);
 render();

@@ -1,69 +1,61 @@
-//constructor function to add new character objects
 import { getDiceRollArray, getDicePlaceholderHtml } from "./utils.js";
 
+const getPercentage = (remainingHealth, maximumHealth) =>
+  (100 * remainingHealth) / maximumHealth;
+
 function Character(data) {
-  Object.assign(this, data); //info from character data is added to character constructor object
+  Object.assign(this, data);
 
   this.maxHealth = this.health;
-  this.getCharacterHtml = function () {
-    const { elementId, charClass, avatar, health, diceCount, diceArray } = this;
-    const diceHtml = this.getDiceHtml(diceCount);
-    const healthBar = this.getHealthBarHtml();
-    return `<div class="character-card">
-            <h4 class="name"> ${charClass} </h4>
-            <img class="avatar" src="${avatar}" />
-            ${healthBar}
-            <div class="health">health: <b> ${health} </b> </div>
-            
-            <div class="dice-container">    
-                ${diceArray}
-            </div>
-        </div>`;
-  };
 
-  //set's the initial dice to empty placeholders
+  //creates the empty placeholders based on the number of dice each character has
   this.diceArray = getDicePlaceholderHtml(this.diceCount);
 
-  //called when attack happens - updates currentDiceDcore based on diceCount and the random roller function
-  //then sets the array depicted into numbers of the current score
-  this.getDiceHtml = function (diceCount) {
-    this.currentDiceScore = getDiceRollArray(diceCount);
+  //creates a dice roll based on the number of dice each character has and renders to html
+  this.getDiceHtml = function () {
+    this.currentDiceScore = getDiceRollArray(this.diceCount);
     this.diceArray = this.currentDiceScore
       .map((num) => `<div class="dice">${num}</div>`)
       .join("");
   };
 
-  //accepts parameter that is currentDiceScore
-  //reduces to a single score and subtracts from current health
-  //IF the damage is less than overall health
+  //sums the current dice roll and subtracts from enemy health
   this.takeDamage = function (attackScoreArray) {
     const totalAttackScore = attackScoreArray.reduce(
-      (total, current) => total + current
+      (total, num) => total + num
     );
-    if (this.health > totalAttackScore) {
-      this.health -= totalAttackScore;
-    }
-    if (this.health <= totalAttackScore) {
+    this.health -= totalAttackScore;
+    if (this.health <= 0) {
+      this.dead = true;
       this.health = 0;
-      this.isDead = true;
     }
-  };
-  this.getHealthBarHtml = function () {
-    const percent = getPercentageHealth(this.health, this.maxHealth);
-    return percent;
   };
 
   this.getHealthBarHtml = function () {
-    const percent = getPercentageHealth(this.health, this.maxHealth);
-    return `<div class="health-bar-outer">
-                <div class="health-bar-inner ${percent <= 25 ? "danger" : ""}" 
-                  style="width: ${percent}%;">
+    const percent = getPercentage(this.health, this.maxHealth);
+
+    return `
+        <div class="health-bar-outer">
+            <div class="health-bar-inner ${percent < 26 ? "danger" : ""} " 
+            style="width: ${percent}%;">
+            </div>
+        </div>`;
+  };
+
+  this.getCharacterHtml = function () {
+    const { elementId, name, avatar, health, diceCount } = this;
+    const healthBar = this.getHealthBarHtml();
+    return `
+            <div class="character-card">
+                <h4 class="name"> ${name} </h4>
+                <img class="avatar" src="${avatar}" />
+                <div class="health">health: <b> ${health} </b></div>
+                ${healthBar}
+                <div class="dice-container">
+                    ${this.diceArray}
                 </div>
             </div>`;
   };
 }
 
-const getPercentageHealth = (remainingHealth, maxHealth) => {
-  return (remainingHealth / maxHealth) * 100;
-};
 export default Character;
